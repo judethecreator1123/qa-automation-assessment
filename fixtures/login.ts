@@ -1,4 +1,5 @@
 import { chromium } from '@playwright/test';
+import path from 'path';
 
 async function loginViaUi() {
     const browser = await chromium.launch({
@@ -12,8 +13,9 @@ async function loginViaUi() {
         await page.getByRole('textbox', { name: 'Password' }).fill('secret_sauce');
         await page.getByRole('button', { name: 'Login' }).click();
 
-        await page.context().storageState({ path: 'auth.json' });
-        console.log('Login Successful! Session saved to auth.json');
+        const authPath = path.resolve(process.cwd(), 'auth.json');
+        await page.context().storageState({ path: authPath });
+        console.log(`Login Successful! Session saved to ${authPath}`);
     } finally {
         await browser.close();
     }
