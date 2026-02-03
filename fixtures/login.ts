@@ -13,7 +13,7 @@ async function loginViaUi() {
         await page.getByRole('button', { name: 'Login' }).click();
 
         await page.context().storageState({ path: 'auth.json' });
-        console.log('Session saved to auth.json');
+        console.log('Login Successful! Session saved to auth.json');
     } finally {
         await browser.close();
     }
