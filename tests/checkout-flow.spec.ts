@@ -1,33 +1,49 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, devices } from '@playwright/test';
+import { CartPage } from '../pages/cartPage';
+import { InventoryPage } from '../pages/inventoryPage';
+import { CheckOutPage } from '../pages/checkOutPage';
+import { testData } from '../data/testData';
 
-test('should be able to add to checkout an item', async ({ page }) => {
-  await page.goto('https://www.saucedemo.com/inventory.html');
+test.describe('Checkout Flow', () => {
 
-  // Assert if page is in inventory page
-  await expect(page.locator('[data-test="title"]')).toContainText('Products');
-  console.log('Successfully navigated to inventory page');
+  test('should be able to checkout an item', async ({ page }) => {
+    // Initialize test data
+    const data = testData();
 
-  await test.step('Add an item to cart', async () => {
+    // Navigate to inventory page
+    await page.goto(process.env.INVENTORYPAGE!);
 
-    await page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
-    await page.locator('[data-test="shopping-cart-link"]').click();
-    await expect(page.locator('[data-test="inventory-item-name"]')).toContainText('Sauce Labs Backpack');
+    // Assert if page is in inventory page
+    await expect(page.locator('[data-test="title"]')).toContainText('Products');
+    console.log('Successfully navigated to inventory page');
 
+    // Add an item to cart=
+    const inventoryPage = new InventoryPage(page);
+    await inventoryPage.addAnItemToCart(data.firstItemLocatorName);
+    await inventoryPage.clickCartIconButton();
+
+    // Checkout an item
+    const cartPage = new CartPage(page);
+    await cartPage.clickCheckOutButton();
+
+    // Fill information in Checkout Page
+    const checkOutPage = new CheckOutPage(page);
+    await checkOutPage.fillInformation(data.firstName(), data.lastName(), data.postalCode());
+    await checkOutPage.clickContinueButton();
+
+    // Assert if Item Name is correct in Checkout page:Overview
+    await expect(page.locator('[data-test="item-4-title-link"] [data-test="inventory-item-name"]')).toContainText(data.firstItemName);
+    console.log(`${data.firstItemName} is correctly added to checkout page`);
+
+    // Click Finish button
+    await checkOutPage.clickFinishButton();
+
+    // Assert Thank you message
+    await expect(page.locator('[data-test="complete-header"]')).toContainText(data.thankYouMesage);
+    console.log(`Successfully checked out the item! Success Message: ${data.thankYouMesage}`);
+
+    // Test Passed
+    console.log(`Test passed`)
   });
-
-  await test.step('Checkout the item', async () => {
-
-    await page.locator('[data-test="checkout"]').click();
-    await page.locator('[data-test="firstName"]').fill('John');
-    await page.locator('[data-test="lastName"]').fill('Doe');
-    await page.locator('[data-test="postalCode"]').fill('6000');
-    await page.locator('[data-test="continue"]').click();
-    await expect(page.locator('[data-test="item-4-title-link"]')).toContainText('Sauce Labs Backpack');
-    await page.locator('[data-test="finish"]').click();
-    await expect(page.locator('[data-test="complete-header"]')).toContainText('Thank you for your order!');
-    console.log('Successfully checked out the item!');
-  });
-
 });
-
 

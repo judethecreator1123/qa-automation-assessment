@@ -1,24 +1,31 @@
 import { chromium } from '@playwright/test';
 import path from 'path';
+import { LoginPage } from '../pages/loginpage';
+require('dotenv').config();
 
 async function loginViaUi() {
     const browser = await chromium.launch({
         headless: process.env.HEADLESS !== 'false'
     });
 
+    const page = await browser.newPage();
+    
+    // Navigate to project url
+    await page.goto(process.env.BASEURL!);
+
+    // Login
     try {
-        const page = await browser.newPage();
-        await page.goto('https://www.saucedemo.com/');
-        await page.getByRole('textbox', { name: 'Username' }).fill('standard_user');
-        await page.getByRole('textbox', { name: 'Password' }).fill('secret_sauce');
-        await page.getByRole('button', { name: 'Login' }).click();
+        const loginPage = new LoginPage(page);
+        await loginPage.login(process.env.USERID!,process.env.PASSWORD! );
 
         const authPath = path.resolve(process.cwd(), 'auth.json');
         await page.context().storageState({ path: authPath });
         console.log(`Login Successful! Session saved to ${authPath}`);
-    } finally {
-        await browser.close();
+    } catch (error) {
+        console.log('Unable to login',error)
     }
+
+    await browser.close();
 
 }
 
