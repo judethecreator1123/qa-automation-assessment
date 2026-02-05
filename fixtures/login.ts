@@ -1,6 +1,6 @@
 import { chromium } from '@playwright/test';
 import path from 'path';
-import { LoginPage } from '../pages/loginpage';
+import { LoginPage } from '../pages/loginPage';
 require('dotenv').config();
 
 async function loginViaUi() {
@@ -17,10 +17,8 @@ async function loginViaUi() {
     try {
         const loginPage = new LoginPage(page);
         await loginPage.login(process.env.USERID!,process.env.PASSWORD! );
-
-        const authPath = path.resolve(process.cwd(), 'auth.json');
-        await page.context().storageState({ path: authPath });
-        console.log(`Login Successful! Session saved to ${authPath}`);
+        await page.context().storageState({ path: 'auth.json' });
+        console.log(`Login Successful! Session saved to`);
     } catch (error) {
         console.log('Unable to login',error)
     }

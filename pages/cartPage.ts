@@ -10,6 +10,11 @@ export class CartPage {
     this.checkOutButton = page.locator('[data-test="checkout"]');
   }
 
+  async verifyCheckOutButtonVisible() {
+    await expect(this.checkOutButton).toBeVisible();
+    console.log('Checkout Button visible')
+  }
+
   async clickCheckOutButton() {
     await this.checkOutButton.click();
   }

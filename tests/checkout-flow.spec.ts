@@ -24,6 +24,7 @@ test.describe('Checkout Flow', () => {
 
     // Checkout an item
     const cartPage = new CartPage(page);
+    await cartPage.verifyCheckOutButtonVisible();
     await cartPage.clickCheckOutButton();
 
     // Fill information in Checkout Page

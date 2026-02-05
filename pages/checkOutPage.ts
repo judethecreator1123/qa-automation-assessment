@@ -8,6 +8,7 @@ export class CheckOutPage {
     private zipCode: Locator;
     private continueButton: Locator;
     private finishButton: Locator;
+    private firstItemName: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -16,6 +17,7 @@ export class CheckOutPage {
         this.zipCode = page.locator('[data-test="postalCode"]');
         this.continueButton = page.locator('[data-test="continue"]');
         this.finishButton = page.locator('[data-test="finish"]');
+        this.firstItemName = page.locator('[data-test="item-4-title-link"] [data-test="inventory-item-name"]');
     }
 
     async fillInformation(firstName: string, lastName: string, zipCode: string) {
