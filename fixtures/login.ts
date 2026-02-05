@@ -18,7 +18,7 @@ async function loginViaUi() {
         const loginPage = new LoginPage(page);
         await loginPage.login(process.env.USERID!,process.env.PASSWORD! );
         await page.context().storageState({ path: 'auth.json' });
-        console.log(`Login Successful! Session saved to`);
+        console.log(`Login Successful! Session is saved`);
     } catch (error) {
         console.log('Unable to login',error)
     }

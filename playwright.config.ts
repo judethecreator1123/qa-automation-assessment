@@ -13,8 +13,8 @@ import path from 'path/win32';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  globalSetup: require.resolve('./fixtures/login'),
-  globalTeardown: require.resolve('./fixtures/teardown'),
+  globalSetup: require.resolve('./fixtures/login.ts'),
+  globalTeardown: require.resolve('./fixtures/teardown.ts'),
   testDir: './tests',
   /* Run tests in files in parallel */
   timeout: 30_000,
