@@ -9,20 +9,18 @@ async function loginViaUi() {
     });
 
     const page = await browser.newPage();
-
+    
     // Navigate to project url
     await page.goto(process.env.BASEURL!);
 
     // Login
     try {
-        const fs = require('fs');
-        const authPath = path.resolve(__dirname, '../auth.json');
-        console.log('Saving auth.json to:', authPath);
-
-        await page.context().storageState({ path: authPath });
-        console.log('File exists?', fs.existsSync(authPath));
+        const loginPage = new LoginPage(page);
+        await loginPage.login(process.env.USERID!,process.env.PASSWORD! );
+        await page.context().storageState({ path: 'auth.json' });
+        console.log(`Login Successful! Session is saved`);
     } catch (error) {
-        console.log('Unable to login', error)
+        console.log('Unable to login',error)
     }
 
     await browser.close();
